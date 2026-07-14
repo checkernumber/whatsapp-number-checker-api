@@ -1,0 +1,11 @@
+# Result / build artifacts
+results.xlsx
+*.xlsx
+input.txt
+
+# Language build dirs
+__pycache__/
+node_modules/
+bin/
+obj/
+*.class

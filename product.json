@@ -1,0 +1,46 @@
+{
+  "name": "WhatsApp Number Checker API",
+  "slug": "whatsapp-number-checker-api",
+  "description": "Bulk, asynchronous, file-based API to verify whether phone numbers are registered on WhatsApp.",
+  "canonical_docs": "https://docs.checknumber.ai/whatsapp-bulk-checker",
+  "dashboard": "https://platform.checknumber.ai",
+  "base_url": "https://api.checknumber.ai",
+  "auth": {
+    "type": "api_key",
+    "header": "X-API-Key"
+  },
+  "endpoints": {
+    "create_task": { "method": "POST", "path": "/v1/tasks" },
+    "get_task": { "method": "POST", "path": "/v1/gettasks" },
+    "balance": { "method": "GET", "path": "/v1/balance" }
+  },
+  "input": {
+    "file_format": "text, one phone number per line, E.164 (e.g. +14155552671)"
+  },
+  "result_fields": [
+    { "field": "Number", "description": "Phone number in E.164 format", "example": "+14155552671" },
+    { "field": "whatsapp", "description": "Whether the number has an active WhatsApp account", "example": "yes" }
+  ],
+  "products": [
+    {
+      "task_type": "ws",
+      "name": "WhatsApp Real-time Checker",
+      "doc_slug": "whatsapp-bulk-checker",
+      "input_kind": "phone"
+    },
+    {
+      "task_type": "ws_active",
+      "name": "WhatsApp Days Checker",
+      "doc_slug": "whatsapp-activity-checker",
+      "input_kind": "phone"
+    },
+    {
+      "task_type": "ws_avatar",
+      "name": "WhatsApp Avatar, Age, Gender & Others Checker",
+      "doc_slug": "whatsapp-bulk-number-checker-avatar",
+      "input_kind": "phone"
+    }
+  ],
+  "pricing_url": "https://checknumber.ai/pricing",
+  "last_updated": "2026-07-13"
+}

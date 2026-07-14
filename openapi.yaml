@@ -1,0 +1,93 @@
+openapi: 3.0.3
+info:
+  title: WhatsApp Number Checker API
+  description: >
+    Bulk, asynchronous, file-based API to verify whether phone numbers are
+    registered on WhatsApp. Submit a file of E.164 numbers, poll for completion,
+    then download a result file marking each number yes/no.
+  version: "1.0.0"
+  contact:
+    name: CheckNumber
+    url: https://docs.checknumber.ai/whatsapp-bulk-checker
+  license:
+    name: MIT
+servers:
+  - url: https://api.checknumber.ai
+security:
+  - ApiKeyAuth: []
+paths:
+  /v1/tasks:
+    post:
+      summary: Submit a bulk WhatsApp verification task
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file, task_type]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Text file, one phone number per line in E.164 format.
+                task_type:
+                  type: string
+                  enum: [ws, ws_active, ws_avatar]
+                  description: ws = real-time; ws_active = last-active days; ws_avatar = profile signals.
+      responses:
+        "200":
+          description: Task created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+  /v1/gettasks:
+    post:
+      summary: Check the status of a task
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [task_id]
+              properties:
+                task_id:
+                  type: string
+      responses:
+        "200":
+          description: Current task state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+  /v1/balance:
+    get:
+      summary: Get account balance
+      responses:
+        "200":
+          description: Current balance
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+  schemas:
+    Task:
+      type: object
+      properties:
+        task_id: { type: string }
+        user_id: { type: string }
+        status:
+          type: string
+          enum: [pending, processing, exported, failed]
+        total: { type: integer }
+        success: { type: integer }
+        failure: { type: integer }
+        result_url:
+          type: string
+          description: Download URL for results, present when status is exported.
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }

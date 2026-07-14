@@ -1,0 +1,39 @@
+# WhatsApp Number Checker API
+
+> Official code examples for the CheckNumber WhatsApp Number Checker API — a bulk, asynchronous, file-based API that verifies whether phone numbers are registered on WhatsApp. Upload a file of E.164 numbers, poll for completion, and download a result file marking each number yes/no.
+
+Base URL: https://api.checknumber.ai
+Authentication: X-API-Key request header
+
+## Workflow
+
+1. Submit: POST https://api.checknumber.ai/v1/tasks with form fields `file` (one E.164 number per line) and `task_type=ws`. Returns a JSON task object with `task_id` and `status`.
+2. Poll: POST https://api.checknumber.ai/v1/gettasks with form field `task_id`. `status` moves pending -> processing -> exported.
+3. Download: when `status` is `exported`, download the file at `result_url`. Columns: `Number` (E.164) and `whatsapp` (yes/no).
+
+## Variants (same workflow, change task_type)
+
+- task_type=ws — real-time WhatsApp registration check; result column `whatsapp` (yes/no)
+- task_type=ws_active — last-active window; result column `active`
+- task_type=ws_avatar — profile enrichment; result columns such as `avatar`, `age`, `gender`
+
+## Pricing
+
+Per number checked, billed against account balance. Current rates: https://checknumber.ai/pricing
+Check balance: GET https://api.checknumber.ai/v1/balance
+
+## Docs
+
+- Canonical documentation: https://docs.checknumber.ai/whatsapp-bulk-checker
+- Dashboard and API keys: https://platform.checknumber.ai
+
+## Code examples in this repository
+
+- examples/python
+- examples/nodejs
+- examples/go
+- examples/java
+- examples/csharp
+- examples/php
+- examples/javascript
+- examples/shell
