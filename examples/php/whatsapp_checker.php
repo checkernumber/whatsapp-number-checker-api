@@ -18,7 +18,7 @@ function apiPost(string $url, array $fields, string $apiKey): array {
     $resp = curl_exec($ch);
     $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
-    if ($code !== 200) {
+    if ($code !== 200 && $code !== 202) {
         throw new Exception("HTTP {$code}: {$resp}");
     }
     return json_decode($resp, true);

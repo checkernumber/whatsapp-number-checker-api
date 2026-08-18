@@ -1,4 +1,5 @@
 # Result / build artifacts
+.DS_Store
 results.xlsx
 *.xlsx
 input.txt

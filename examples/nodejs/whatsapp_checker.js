@@ -4,7 +4,7 @@
 import fs from "node:fs";
 import { setTimeout as sleep } from "node:timers/promises";
 
-const BASE_URL = "https://api.checknumber.ai";
+const BASE_URL = process.env.API_BASE_URL || "https://api.checknumber.ai";
 const API_KEY = process.env.CHECKNUMBER_API_KEY || "YOUR_API_KEY";
 const TASK_TYPE = "ws"; // ws | ws_active | ws_avatar
 

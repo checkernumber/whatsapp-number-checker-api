@@ -8,7 +8,7 @@ import os
 import time
 import requests
 
-BASE_URL = "https://api.checknumber.ai"
+BASE_URL = os.environ.get("API_BASE_URL", "https://api.checknumber.ai")
 API_KEY = os.environ.get("CHECKNUMBER_API_KEY", "YOUR_API_KEY")
 TASK_TYPE = "ws"  # ws | ws_active | ws_avatar
 

@@ -75,7 +75,7 @@ func doTask(req *http.Request) (*Task, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusAccepted {
 		return nil, fmt.Errorf("http %d", resp.StatusCode)
 	}
 	var t Task

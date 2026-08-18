@@ -1,7 +1,8 @@
 {
   "name": "WhatsApp Number Checker API",
   "slug": "whatsapp-number-checker-api",
-  "description": "Bulk, asynchronous, file-based API to verify whether phone numbers are registered on WhatsApp.",
+  "description": "Asynchronous file-based WhatsApp registration, activity, and profile checks.",
+  "landing_page": "https://checknumber.ai/products/whatsapp",
   "canonical_docs": "https://docs.checknumber.ai/whatsapp-bulk-checker",
   "dashboard": "https://platform.checknumber.ai",
   "base_url": "https://api.checknumber.ai",
@@ -11,36 +12,42 @@
   },
   "endpoints": {
     "create_task": { "method": "POST", "path": "/v1/tasks" },
-    "get_task": { "method": "POST", "path": "/v1/gettasks" },
-    "balance": { "method": "GET", "path": "/v1/balance" }
+    "get_task": { "method": "POST", "path": "/v1/gettasks" }
   },
   "input": {
-    "file_format": "text, one phone number per line, E.164 (e.g. +14155552671)"
+    "file_format": "text, one E.164 phone number per line"
   },
-  "result_fields": [
-    { "field": "Number", "description": "Phone number in E.164 format", "example": "+14155552671" },
-    { "field": "whatsapp", "description": "Whether the number has an active WhatsApp account", "example": "yes" }
-  ],
   "products": [
     {
       "task_type": "ws",
-      "name": "WhatsApp Real-time Checker",
+      "name": "WhatsApp Number Checker",
       "doc_slug": "whatsapp-bulk-checker",
-      "input_kind": "phone"
+      "input_kind": "phone",
+      "min_numbers": 500,
+      "max_numbers": 10000000,
+      "result_fields": ["number", "activated"]
     },
     {
       "task_type": "ws_active",
-      "name": "WhatsApp Days Checker",
+      "name": "WhatsApp Activity Checker",
       "doc_slug": "whatsapp-activity-checker",
-      "input_kind": "phone"
+      "input_kind": "phone",
+      "min_numbers": 1000,
+      "max_numbers": 10000000,
+      "result_fields": ["number", "activated", "activetime", "activedays", "business"],
+      "result_fields_note": "The retired signature column is not returned."
     },
     {
       "task_type": "ws_avatar",
-      "name": "WhatsApp Avatar, Age, Gender & Others Checker",
+      "name": "WhatsApp Profile Checker",
       "doc_slug": "whatsapp-bulk-number-checker-avatar",
-      "input_kind": "phone"
+      "input_kind": "phone",
+      "min_numbers": 500,
+      "max_numbers": 10000000,
+      "result_fields": ["number", "activated", "age", "avatar", "category", "gender", "hair_color", "skin_color"],
+      "result_fields_note": "The catalog normalizes the export to one canonical number column."
     }
   ],
   "pricing_url": "https://checknumber.ai/pricing",
-  "last_updated": "2026-07-13"
+  "last_reviewed": "2026-08-17"
 }

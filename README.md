@@ -1,6 +1,6 @@
 # WhatsApp Number Checker API — Bulk Phone Number Verification
 
-The **WhatsApp Number Checker API** verifies whether a phone number is registered on WhatsApp. You upload a file of phone numbers in E.164 format, the API processes them asynchronously in bulk, and returns a downloadable result marking each number `yes` / `no`. This repository contains official, runnable code examples in 8 languages (Python, Node.js, Go, Java, C#, PHP, JavaScript, Shell).
+The **WhatsApp Number Checker API** is a family of three asynchronous, file-based products for WhatsApp registration, activity, and profile signals. Upload E.164 phone numbers, poll the task, and download the exported result. This repository contains official code examples in 8 languages (Python, Node.js, Go, Java, C#, PHP, JavaScript, and Shell).
 
 - **Base URL:** `https://api.checknumber.ai`
 - **Auth:** `X-API-Key` request header
@@ -17,7 +17,7 @@ The **WhatsApp Number Checker API** verifies whether a phone number is registere
 - [What request parameters does the API take?](#what-request-parameters-does-the-api-take)
 - [What does the response look like?](#what-does-the-response-look-like)
 - [How do I check when a phone number was last active on WhatsApp?](#how-do-i-check-when-a-phone-number-was-last-active-on-whatsapp)
-- [How do I get WhatsApp avatar, age, and gender via API?](#how-do-i-get-whatsapp-avatar-age-and-gender-via-api)
+- [How do I get WhatsApp profile signals via API?](#how-do-i-get-whatsapp-profile-signals-via-api)
 - [What does the WhatsApp number checker API cost?](#what-does-the-whatsapp-number-checker-api-cost)
 - [WhatsApp number checker API vs alternatives](#whatsapp-number-checker-api-vs-alternatives)
 - [Code examples](#code-examples)
@@ -27,7 +27,7 @@ The **WhatsApp Number Checker API** verifies whether a phone number is registere
 
 ## How do I check if a phone number is registered on WhatsApp via API?
 
-Send a `POST` request to `https://api.checknumber.ai/v1/tasks` with your `X-API-Key` header, a `file` of phone numbers, and `task_type=ws`. The API returns a `task_id`. You then poll `https://api.checknumber.ai/v1/gettasks` with that `task_id` until `status` becomes `exported`, at which point a `result_url` points to an Excel/CSV file marking each number `yes` (has WhatsApp) or `no`.
+Send a `POST` request to `https://api.checknumber.ai/v1/tasks` with your `X-API-Key` header, a `file` of phone numbers, and `task_type=ws`. The API returns a `task_id`. Poll `https://api.checknumber.ai/v1/gettasks` with that ID until `status` becomes `exported`, then download the file at `result_url`.
 
 ```bash
 # 1. Submit a task
@@ -37,7 +37,7 @@ curl --location 'https://api.checknumber.ai/v1/tasks' \
   --form 'task_type="ws"'
 ```
 
-Each line of `numbers.txt` is one phone number in E.164 format (e.g. `+14155552671`).
+Each line of `numbers.txt` is one phone number in E.164 format (e.g. `+14155550100`).
 
 ## How do I verify WhatsApp numbers in bulk?
 
@@ -62,8 +62,16 @@ See [`examples/`](./examples) for complete, runnable implementations of this ful
 
 | Parameter   | Type   | Description                                                        |
 | ----------- | ------ | ----------------------------------------------------------------- |
-| `file`      | file   | Text file, one phone number per line in E.164 format (`+14155552671`) |
+| `file`      | file   | Text file, one phone number per line in E.164 format (`+14155550100`) |
 | `task_type` | string | Set to `ws` for the WhatsApp real-time checker                    |
+
+Current product limits:
+
+| `task_type` | Minimum rows | Maximum rows |
+| ----------- | -----------: | -----------: |
+| `ws` | 500 | 10,000,000 |
+| `ws_active` | 1,000 | 10,000,000 |
+| `ws_avatar` | 500 | 10,000,000 |
 
 **Check status** — `POST https://api.checknumber.ai/v1/gettasks`
 
@@ -75,8 +83,8 @@ See [`examples/`](./examples) for complete, runnable implementations of this ful
 
 | Field      | Description                                | Example        |
 | ---------- | ------------------------------------------ | -------------- |
-| `Number`   | Phone number in E.164 format               | `+14155552671` |
-| `whatsapp` | Whether the number has an active WhatsApp account | `yes` / `no`   |
+| `number`   | Submitted phone number                     | `+14155550100` |
+| `activated` | Whether WhatsApp registration was detected | `yes` / `no`   |
 
 ## What does the response look like?
 
@@ -92,13 +100,14 @@ See [`examples/`](./examples) for complete, runnable implementations of this ful
   "total": 20000,
   "success": 20000,
   "failure": 0,
-  "result_url": "https://.../results.xlsx"
+  "result_url": "https://example-link-to-results.zip"
 }
 ```
 
 | Field        | Description                                                        |
 | ------------ | ----------------------------------------------------------------- |
 | `task_id`    | Unique task identifier                                             |
+| `user_id`    | Account identifier when exposed by the deployment                  |
 | `status`     | `pending` (queued) → `processing` → `exported` (results ready)     |
 | `total`      | Total phone numbers processed                                     |
 | `success`    | Numbers successfully identified                                   |
@@ -122,12 +131,17 @@ Result fields:
 
 | Field    | Description                                   | Example        |
 | -------- | --------------------------------------------- | -------------- |
-| `Number` | Phone number in E.164 format                  | `+14155552671` |
-| `active` | Most recent activity window for the account   | `7d` / `30d`   |
+| `number` | Phone number in E.164 format | `+14155550100` |
+| `activated` | Whether the number is registered | `yes` / `no` |
+| `activetime` | Activity value returned by the service | service value |
+| `activedays` | Active-day value returned by the service | service value |
+| `business` | Whether the account is a Business account | `yes` / `no` |
+
+The retired `signature` column is not returned.
 
 The status/poll/download workflow is identical to the real-time checker above — change only `task_type` in any of the [code examples](#code-examples).
 
-## How do I get WhatsApp avatar, age, and gender via API?
+## How do I get WhatsApp profile signals via API?
 
 Use `task_type=ws_avatar`. The result enriches each number with profile signals (such as avatar availability plus inferred age and gender), for use cases like audience segmentation and profile enrichment.
 
@@ -142,12 +156,16 @@ Result fields:
 
 | Field     | Description                                | Example        |
 | --------- | ------------------------------------------ | -------------- |
-| `Number`  | Phone number in E.164 format               | `+14155552671` |
-| `avatar`  | Whether a profile photo is available       | `yes` / `no`   |
-| `age`     | Inferred age range                         | `25-34`        |
-| `gender`  | Inferred gender                            | `male` / `female` |
+| `number` | Phone number in E.164 format | `+14155550100` |
+| `activated` | Whether the number is registered | `yes` / `no` |
+| `age` | Inferred age signal | service value |
+| `avatar` | Avatar signal returned by the service | service value |
+| `category` | Profile category signal | service value |
+| `gender` | Inferred gender signal | service value |
+| `hair_color` | Inferred hair-color signal | service value |
+| `skin_color` | Inferred skin-tone signal | service value |
 
-> Exact enrichment fields may vary — see the canonical docs for the authoritative, up-to-date field list: https://docs.checknumber.ai/whatsapp-bulk-checker
+The catalog normalizes the export to one canonical `number` column.
 
 ## What does the WhatsApp number checker API cost?
 
@@ -192,9 +210,14 @@ export CHECKNUMBER_API_KEY="YOUR_API_KEY"
 
 | Status | Billing  | Description                                              |
 | ------ | -------- | ------------------------------------------------------- |
-| `200`  | `charge` | Request successful, task created or status retrieved     |
-| `400`  | `free`   | Bad request — invalid parameters or file format          |
-| `500`  | `free`   | Internal server error — retry later                      |
+| `200` | — | Task status returned successfully |
+| `200` / `202` | estimated charge applied | Task accepted; current and legacy deployments may use either success status |
+| `400` | no completed charge | Invalid file, task type, or row count |
+| `401` | none | Missing or invalid API key |
+| `402` | none | Insufficient balance |
+| `404` | none | Task not found |
+| `413` | none | Uploaded file is too large |
+| `500` | none | Internal error; retry with backoff |
 
 ## FAQ
 
@@ -202,10 +225,10 @@ export CHECKNUMBER_API_KEY="YOUR_API_KEY"
 No. It is a bulk, asynchronous, file-based API. Submit a list, poll for completion, download results. This is optimized for verifying large lists efficiently.
 
 **What number format is required?**
-E.164, one per line — e.g. `+14155552671`. Include the country code with a leading `+`.
+E.164, one per line — e.g. `+14155550100`. Include the country code with a leading `+`.
 
 **How do I also get last-active dates or profile info?**
-Use `task_type=ws_active` for last-active days, or `task_type=ws_avatar` for avatar/age/gender signals. The request/response shape is identical; only `task_type` and the result fields change.
+Use `task_type=ws_active` for activity and Business signals, or `task_type=ws_avatar` for the documented profile signals. The request/response shape is identical; only `task_type`, limits, and exported fields change.
 
 **How do I check my balance?**
 `GET https://api.checknumber.ai/v1/balance` with your `X-API-Key` header.
@@ -220,4 +243,4 @@ Use this API only to verify numbers you are authorized to process, and in compli
 
 ---
 
-*Last updated: 2026-07-13 · Maintained by CheckNumber. Canonical docs: https://docs.checknumber.ai/whatsapp-bulk-checker*
+*Last reviewed: 2026-08-17 · Maintained by CheckNumber. Canonical docs: https://docs.checknumber.ai/whatsapp-bulk-checker*

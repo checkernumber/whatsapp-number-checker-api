@@ -37,11 +37,21 @@ paths:
                   description: ws = real-time; ws_active = last-active days; ws_avatar = profile signals.
       responses:
         "200":
-          description: Task created
+          description: Task accepted by deployments using the legacy success status
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Task" }
+        "202":
+          description: Task accepted
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Task"
+        "400": { description: Invalid file, task type, or row count }
+        "401": { description: Missing or invalid API key }
+        "402": { description: Insufficient balance }
+        "413": { description: Uploaded file is too large }
+        "500": { description: Internal server error }
   /v1/gettasks:
     post:
       summary: Check the status of a task
@@ -62,12 +72,20 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Task"
+        "401": { description: Missing or invalid API key }
+        "404": { description: Task not found }
+        "500": { description: Internal server error }
   /v1/balance:
     get:
       summary: Get account balance
       responses:
         "200":
           description: Current balance
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Balance" }
+        "401": { description: Missing or invalid API key }
+        "502": { description: Balance service unavailable }
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -75,11 +93,21 @@ components:
       in: header
       name: X-API-Key
   schemas:
+    Money:
+      type: object
+      properties:
+        amount: { type: string }
+        currency: { type: string, example: USD }
+    Balance:
+      type: object
+      required: [balance]
+      properties:
+        balance: { type: number, format: double }
     Task:
       type: object
       properties:
         task_id: { type: string }
-        user_id: { type: string }
+        user_id: { type: string, description: Account identifier returned by deployments that expose it }
         status:
           type: string
           enum: [pending, processing, exported, failed]
@@ -89,5 +117,8 @@ components:
         result_url:
           type: string
           description: Download URL for results, present when status is exported.
+        estimated_amount: { $ref: "#/components/schemas/Money" }
+        actual_amount: { $ref: "#/components/schemas/Money" }
+        message: { type: string }
         created_at: { type: string, format: date-time }
         updated_at: { type: string, format: date-time }
