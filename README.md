@@ -1,6 +1,6 @@
 # WhatsApp Number Checker API — Bulk Verification | CheckNumber
 
-The **CheckNumber WhatsApp Number Checker API** is a family of three asynchronous, file-based products for WhatsApp registration, activity, and profile signals. Upload E.164 phone numbers, poll the task, and download the exported result. This is the official CheckNumber example repository, with integrations in Python, Node.js, Go, Java, C#, PHP, JavaScript, and Shell.
+The **CheckNumber WhatsApp Number Checker API** is a family of three asynchronous, file-based products for WhatsApp registration, activity, and profile signals. Upload E.164 phone numbers, poll the task, and download the exported result. This is the official CheckNumber example repository, with integrations in Python, Node.js, Go, Java, C#, PHP, and Shell.
 
 - **Product page:** https://checknumber.ai/products/whatsapp
 - **Base URL:** `https://api.checknumber.ai`
@@ -203,7 +203,6 @@ Each folder is a self-contained, runnable implementation of the full submit → 
 | Java       | [`examples/java`](./examples/java)             |
 | C#         | [`examples/csharp`](./examples/csharp)         |
 | PHP        | [`examples/php`](./examples/php)               |
-| JavaScript (browser) | [`examples/javascript`](./examples/javascript) |
 | Shell (curl) | [`examples/shell`](./examples/shell)         |
 
 Set your API key as an environment variable before running:

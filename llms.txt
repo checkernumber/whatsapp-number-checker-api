@@ -17,7 +17,7 @@
 - Input: text file with one E.164 phone number per line.
 - Processing: asynchronous bulk task.
 - Products: ws, ws_active, ws_avatar.
-- Examples: Python, Node.js, Go, Java, C#, PHP, JavaScript, Shell.
+- Examples: Python, Node.js, Go, Java, C#, PHP, Shell.
 
 ## Product contracts
 - `ws`: 500–10,000,000 rows; fields `number`, `activated`.
