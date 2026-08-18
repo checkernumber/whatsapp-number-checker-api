@@ -1,7 +1,7 @@
 # Result / build artifacts
 .DS_Store
-results.xlsx
-*.xlsx
+results.zip
+result.zip
 input.txt
 
 # Language build dirs

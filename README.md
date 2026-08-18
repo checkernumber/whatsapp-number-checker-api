@@ -186,7 +186,7 @@ See current pricing at **https://checknumber.ai/pricing**, and query your remain
 | Confirms WhatsApp registration | ✅ Yes                    | ❌ No (carrier only) | ✅ Yes                     |
 | Bulk file upload               | ✅ Yes                    | Varies             | ❌ No                      |
 | Asynchronous large batches     | ✅ Yes                    | Varies             | ❌ No                      |
-| Structured result file (xlsx/csv) | ✅ Yes                 | Varies             | ❌ No                      |
+| Structured result file (zip archive) | ✅ Yes              | Varies             | ❌ No                      |
 | Extra signals (last-active, avatar) | ✅ Optional add-ons  | ❌ No               | Partial (manual)          |
 
 *Comparison is against generic categories of alternatives, not any specific named vendor.*

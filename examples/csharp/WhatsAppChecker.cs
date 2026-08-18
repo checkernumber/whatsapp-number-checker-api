@@ -12,7 +12,8 @@ class WhatsAppChecker
     const string BaseUrl = "https://api.checknumber.ai";
     const string TaskType = "ws"; // ws | ws_active | ws_avatar
     static readonly string ApiKey =
-        Environment.GetEnvironmentVariable("CHECKNUMBER_API_KEY") ?? "YOUR_API_KEY";
+        Environment.GetEnvironmentVariable("CHECKNUMBER_API_KEY")
+        ?? throw new Exception("Set the CHECKNUMBER_API_KEY environment variable");
     static readonly HttpClient Http = new HttpClient();
 
     static async Task<JsonElement> PostAsync(string url, MultipartFormDataContent form)
@@ -59,8 +60,8 @@ class WhatsAppChecker
 
         if (task.TryGetProperty("result_url", out var url) && url.GetString() is string u && u.Length > 0)
         {
-            File.WriteAllBytes("results.xlsx", await Http.GetByteArrayAsync(u));
-            Console.WriteLine("saved to: results.xlsx");
+            File.WriteAllBytes("results.zip", await Http.GetByteArrayAsync(u));
+            Console.WriteLine("saved to: results.zip");
         }
     }
 }

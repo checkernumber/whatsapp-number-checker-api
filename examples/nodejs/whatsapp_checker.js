@@ -5,7 +5,10 @@ import fs from "node:fs";
 import { setTimeout as sleep } from "node:timers/promises";
 
 const BASE_URL = process.env.API_BASE_URL || "https://api.checknumber.ai";
-const API_KEY = process.env.CHECKNUMBER_API_KEY || "YOUR_API_KEY";
+const API_KEY = process.env.CHECKNUMBER_API_KEY;
+if (!API_KEY) {
+  throw new Error("Set the CHECKNUMBER_API_KEY environment variable");
+}
 const TASK_TYPE = "ws"; // ws | ws_active | ws_avatar
 
 async function submitTask(filePath) {
@@ -43,7 +46,7 @@ async function poll(taskId, intervalMs = 5000) {
   }
 }
 
-async function download(resultUrl, outPath = "results.xlsx") {
+async function download(resultUrl, outPath = "results.zip") {
   const resp = await fetch(resultUrl);
   if (!resp.ok) throw new Error(`download failed: ${resp.status}`);
   fs.writeFileSync(outPath, Buffer.from(await resp.arrayBuffer()));

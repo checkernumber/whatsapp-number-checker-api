@@ -12,9 +12,16 @@ import java.nio.file.Path;
 public class WhatsAppChecker {
     static final String BASE_URL = "https://api.checknumber.ai";
     static final String TASK_TYPE = "ws"; // ws | ws_active | ws_avatar
-    static final String API_KEY =
-        System.getenv().getOrDefault("CHECKNUMBER_API_KEY", "YOUR_API_KEY");
+    static final String API_KEY = requireEnv("CHECKNUMBER_API_KEY");
     static final HttpClient CLIENT = HttpClient.newHttpClient();
+
+    static String requireEnv(String key) {
+        String v = System.getenv(key);
+        if (v == null || v.isBlank()) {
+            throw new IllegalStateException("Set the " + key + " environment variable");
+        }
+        return v;
+    }
 
     // Minimal multipart builder (kept dependency-free for the example).
     static HttpRequest.BodyPublisher multipart(String boundary, byte[] fileBytes,
@@ -30,6 +37,23 @@ public class WhatsAppChecker {
         var out = new java.io.ByteArrayOutputStream();
         out.write(head); out.write(fileBytes); out.write(tail);
         return HttpRequest.BodyPublishers.ofByteArray(out.toByteArray());
+    }
+
+    static String send(HttpRequest req) throws IOException, InterruptedException {
+        HttpResponse<String> resp = CLIENT.send(req, HttpResponse.BodyHandlers.ofString());
+        if (resp.statusCode() >= 300) {
+            throw new IllegalStateException("request failed: " + resp.statusCode() + " " + resp.body());
+        }
+        return resp.body();
+    }
+
+    static void download(String url, String dest) throws IOException, InterruptedException {
+        HttpRequest req = HttpRequest.newBuilder(URI.create(url)).GET().build();
+        HttpResponse<byte[]> resp = CLIENT.send(req, HttpResponse.BodyHandlers.ofByteArray());
+        if (resp.statusCode() >= 300) {
+            throw new IllegalStateException("download failed: " + resp.statusCode());
+        }
+        Files.write(Path.of(dest), resp.body());
     }
 
     static String field(String json, String key) {
@@ -50,7 +74,7 @@ public class WhatsAppChecker {
             .header("Content-Type", "multipart/form-data; boundary=" + boundary)
             .POST(multipart(boundary, fileBytes, "numbers.txt", TASK_TYPE))
             .build();
-        String submit = CLIENT.send(submitReq, HttpResponse.BodyHandlers.ofString()).body();
+        String submit = send(submitReq);
         String taskId = field(submit, "task_id");
         System.out.println("task_id: " + taskId);
 
@@ -62,13 +86,19 @@ public class WhatsAppChecker {
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .POST(HttpRequest.BodyPublishers.ofString("task_id=" + taskId))
                 .build();
-            task = CLIENT.send(getReq, HttpResponse.BodyHandlers.ofString()).body();
+            task = send(getReq);
             status = field(task, "status");
             System.out.println("status=" + status);
             if ("failed".equals(status)) throw new RuntimeException("task failed");
             if (!"exported".equals(status)) Thread.sleep(5000);
         } while (!"exported".equals(status));
 
-        System.out.println("result_url: " + field(task, "result_url"));
+        String resultUrl = field(task, "result_url");
+        if (resultUrl == null || resultUrl.isBlank()) {
+            System.out.println("task exported but no result_url");
+            return;
+        }
+        download(resultUrl, "results.zip");
+        System.out.println("saved to: results.zip");
     }
 }

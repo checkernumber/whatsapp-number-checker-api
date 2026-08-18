@@ -19,7 +19,7 @@ const (
 	taskType = "ws" // ws | ws_active | ws_avatar
 )
 
-var apiKey = getenv("CHECKNUMBER_API_KEY", "YOUR_API_KEY")
+var apiKey = mustEnv("CHECKNUMBER_API_KEY")
 
 type Task struct {
 	TaskID    string `json:"task_id"`
@@ -30,11 +30,31 @@ type Task struct {
 	ResultURL string `json:"result_url"`
 }
 
-func getenv(k, def string) string {
-	if v := os.Getenv(k); v != "" {
-		return v
+func mustEnv(k string) string {
+	v := os.Getenv(k)
+	if v == "" {
+		fmt.Fprintf(os.Stderr, "Set the %s environment variable\n", k)
+		os.Exit(1)
 	}
-	return def
+	return v
+}
+
+func download(url, dest string) error {
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode >= 300 {
+		return fmt.Errorf("download failed: http %d", resp.StatusCode)
+	}
+	out, err := os.Create(dest)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+	_, err = io.Copy(out, resp.Body)
+	return err
 }
 
 func submitTask(path string) (*Task, error) {
@@ -103,5 +123,12 @@ func main() {
 		}
 		time.Sleep(5 * time.Second)
 	}
-	fmt.Println("result_url:", task.ResultURL)
+	if task.ResultURL == "" {
+		fmt.Println("task exported but no result_url")
+		return
+	}
+	if err := download(task.ResultURL, "results.zip"); err != nil {
+		panic(err)
+	}
+	fmt.Println("saved to: results.zip")
 }

@@ -2,34 +2,24 @@
 // Workflow: submit a file of E.164 numbers -> poll status -> download results.
 // Docs: https://docs.checknumber.ai/whatsapp-bulk-checker
 //
-// NOTE: Do NOT ship your API key in client-side code in production — proxy these
-// calls through your own backend. This example shows the raw request shape.
+// Browser code must never hold an API key. This example calls a same-origin
+// backend proxy (e.g. /api/async-check-proxy) that your server implements;
+// the proxy is responsible for attaching the real API key server-side and
+// forwarding to https://api.checknumber.ai.
 
-const BASE_URL = "https://api.checknumber.ai";
-const API_KEY = "YOUR_API_KEY";
 const TASK_TYPE = "ws"; // ws | ws_active | ws_avatar
 
 async function submitTask(file) {
   const form = new FormData();
   form.append("file", file); // a File/Blob, e.g. from <input type="file">
   form.append("task_type", TASK_TYPE);
-  const resp = await fetch(`${BASE_URL}/v1/tasks`, {
-    method: "POST",
-    headers: { "X-API-Key": API_KEY },
-    body: form,
-  });
+  const resp = await fetch("/api/async-check-proxy", { method: "POST", body: form });
   if (!resp.ok) throw new Error(`submit failed: ${resp.status}`);
   return resp.json();
 }
 
 async function getTask(taskId) {
-  const form = new FormData();
-  form.append("task_id", taskId);
-  const resp = await fetch(`${BASE_URL}/v1/gettasks`, {
-    method: "POST",
-    headers: { "X-API-Key": API_KEY },
-    body: form,
-  });
+  const resp = await fetch(`/api/async-check-proxy?task_id=${encodeURIComponent(taskId)}`);
   if (!resp.ok) throw new Error(`getTask failed: ${resp.status}`);
   return resp.json();
 }

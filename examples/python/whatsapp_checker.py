@@ -9,7 +9,9 @@ import time
 import requests
 
 BASE_URL = os.environ.get("API_BASE_URL", "https://api.checknumber.ai")
-API_KEY = os.environ.get("CHECKNUMBER_API_KEY", "YOUR_API_KEY")
+API_KEY = os.environ.get("CHECKNUMBER_API_KEY")
+if not API_KEY:
+    raise SystemExit("Set the CHECKNUMBER_API_KEY environment variable")
 TASK_TYPE = "ws"  # ws | ws_active | ws_avatar
 
 
@@ -48,7 +50,7 @@ def poll(task_id: str, interval: int = 5) -> dict:
         time.sleep(interval)
 
 
-def download(result_url: str, out_path: str = "results.xlsx") -> str:
+def download(result_url: str, out_path: str = "results.zip") -> str:
     resp = requests.get(result_url, stream=True, timeout=300)
     resp.raise_for_status()
     with open(out_path, "wb") as f:

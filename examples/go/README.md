@@ -10,4 +10,4 @@ cd examples
 go run go/main.go
 ```
 
-Submits to `POST /v1/tasks` (`task_type=ws`), polls `POST /v1/gettasks`, returns the result URL. Full docs: https://docs.checknumber.ai/whatsapp-bulk-checker
+Submits to `POST /v1/tasks` (`task_type=ws`), polls `POST /v1/gettasks`, and downloads the result to `results.zip`. Full docs: https://docs.checknumber.ai/whatsapp-bulk-checker

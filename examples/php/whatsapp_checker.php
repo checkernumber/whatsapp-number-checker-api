@@ -5,7 +5,11 @@
 
 const BASE_URL = "https://api.checknumber.ai";
 const TASK_TYPE = "ws"; // ws | ws_active | ws_avatar
-$apiKey = getenv("CHECKNUMBER_API_KEY") ?: "YOUR_API_KEY";
+$apiKey = getenv("CHECKNUMBER_API_KEY");
+if (!$apiKey) {
+    fwrite(STDERR, "Set the CHECKNUMBER_API_KEY environment variable\n");
+    exit(1);
+}
 
 function apiPost(string $url, array $fields, string $apiKey): array {
     $ch = curl_init($url);
@@ -43,6 +47,6 @@ do {
 } while ($task["status"] !== "exported");
 
 if (!empty($task["result_url"])) {
-    file_put_contents("results.xlsx", fopen($task["result_url"], "r"));
-    echo "saved to: results.xlsx\n";
+    file_put_contents("results.zip", fopen($task["result_url"], "r"));
+    echo "saved to: results.zip\n";
 }
