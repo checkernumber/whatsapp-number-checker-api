@@ -1,7 +1,8 @@
-# WhatsApp Number Checker API — Bulk Phone Number Verification
+# WhatsApp Number Checker API — Bulk Verification | CheckNumber
 
-The **WhatsApp Number Checker API** is a family of three asynchronous, file-based products for WhatsApp registration, activity, and profile signals. Upload E.164 phone numbers, poll the task, and download the exported result. This repository contains official code examples in 8 languages (Python, Node.js, Go, Java, C#, PHP, JavaScript, and Shell).
+The **CheckNumber WhatsApp Number Checker API** is a family of three asynchronous, file-based products for WhatsApp registration, activity, and profile signals. Upload E.164 phone numbers, poll the task, and download the exported result. This is the official CheckNumber example repository, with integrations in Python, Node.js, Go, Java, C#, PHP, JavaScript, and Shell.
 
+- **Product page:** https://checknumber.ai/products/whatsapp
 - **Base URL:** `https://api.checknumber.ai`
 - **Auth:** `X-API-Key` request header
 - **Full API docs:** https://docs.checknumber.ai/whatsapp-bulk-checker
@@ -12,6 +13,7 @@ The **WhatsApp Number Checker API** is a family of three asynchronous, file-base
 
 ## Table of Contents
 
+- [What is the CheckNumber WhatsApp Number Checker API?](#what-is-the-checknumber-whatsapp-number-checker-api)
 - [How do I check if a phone number is registered on WhatsApp via API?](#how-do-i-check-if-a-phone-number-is-registered-on-whatsapp-via-api)
 - [How do I verify WhatsApp numbers in bulk?](#how-do-i-verify-whatsapp-numbers-in-bulk)
 - [What request parameters does the API take?](#what-request-parameters-does-the-api-take)
@@ -24,6 +26,10 @@ The **WhatsApp Number Checker API** is a family of three asynchronous, file-base
 - [Status codes](#status-codes)
 - [FAQ](#faq)
 - [Support & legal](#support--legal)
+
+## What is the CheckNumber WhatsApp Number Checker API?
+
+CheckNumber's WhatsApp API verifies lists of phone numbers through three task types: `ws` checks registration, `ws_active` adds documented activity and Business-account signals, and `ws_avatar` returns documented profile and inferred image signals. All three use the same bulk workflow: upload a text file to `POST /v1/tasks`, poll `POST /v1/gettasks`, and download the exported result. The API is intended for authorized list verification and enrichment, not messaging, contact discovery, or access to private WhatsApp content.
 
 ## How do I check if a phone number is registered on WhatsApp via API?
 
@@ -67,11 +73,11 @@ See [`examples/`](./examples) for complete, runnable implementations of this ful
 
 Current product limits:
 
-| `task_type` | Minimum rows | Maximum rows |
-| ----------- | -----------: | -----------: |
-| `ws` | 500 | 10,000,000 |
-| `ws_active` | 1,000 | 10,000,000 |
-| `ws_avatar` | 500 | 10,000,000 |
+| `task_type` | Minimum rows | Maximum rows | Product documentation |
+| ----------- | -----------: | -----------: | --- |
+| `ws` | 500 | 10,000,000 | [WhatsApp registration checker](https://docs.checknumber.ai/whatsapp-bulk-checker) |
+| `ws_active` | 1,000 | 10,000,000 | [WhatsApp activity checker](https://docs.checknumber.ai/whatsapp-activity-checker) |
+| `ws_avatar` | 500 | 10,000,000 | [WhatsApp profile checker](https://docs.checknumber.ai/whatsapp-bulk-number-checker-avatar) |
 
 **Check status** — `POST https://api.checknumber.ai/v1/gettasks`
 
@@ -235,12 +241,16 @@ Use `task_type=ws_active` for activity and Business signals, or `task_type=ws_av
 
 ## Support & legal
 
-- **Documentation:** https://docs.checknumber.ai/whatsapp-bulk-checker
+- **Official product page:** https://checknumber.ai/products/whatsapp
+- **Registration API documentation:** https://docs.checknumber.ai/whatsapp-bulk-checker
+- **Activity API documentation:** https://docs.checknumber.ai/whatsapp-activity-checker
+- **Profile API documentation:** https://docs.checknumber.ai/whatsapp-bulk-number-checker-avatar
 - **Dashboard & API keys:** https://platform.checknumber.ai
+- **Current pricing:** https://checknumber.ai/pricing
 - **License:** [MIT](./LICENSE) (sample code)
 
 Use this API only to verify numbers you are authorized to process, and in compliance with applicable privacy laws (GDPR, CCPA, etc.) and WhatsApp's terms. This is an unofficial checker and is not affiliated with or endorsed by WhatsApp/Meta.
 
 ---
 
-*Last reviewed: 2026-08-17 · Maintained by CheckNumber. Canonical docs: https://docs.checknumber.ai/whatsapp-bulk-checker*
+*Last reviewed: 2026-08-18 · Maintained by CheckNumber. Canonical product page: https://checknumber.ai/products/whatsapp*

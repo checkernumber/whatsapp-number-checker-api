@@ -1,18 +1,23 @@
 {
   "name": "WhatsApp Number Checker API",
+  "brand": "CheckNumber",
   "slug": "whatsapp-number-checker-api",
+  "repository": "checkernumber/whatsapp-number-checker-api",
   "description": "Asynchronous file-based WhatsApp registration, activity, and profile checks.",
+  "official_site": "https://checknumber.ai",
   "landing_page": "https://checknumber.ai/products/whatsapp",
   "canonical_docs": "https://docs.checknumber.ai/whatsapp-bulk-checker",
   "dashboard": "https://platform.checknumber.ai",
   "base_url": "https://api.checknumber.ai",
+  "mode": "async",
   "auth": {
     "type": "api_key",
     "header": "X-API-Key"
   },
   "endpoints": {
     "create_task": { "method": "POST", "path": "/v1/tasks" },
-    "get_task": { "method": "POST", "path": "/v1/gettasks" }
+    "get_task": { "method": "POST", "path": "/v1/gettasks" },
+    "balance": { "method": "GET", "path": "/v1/balance" }
   },
   "input": {
     "file_format": "text, one E.164 phone number per line"
@@ -49,5 +54,7 @@
     }
   ],
   "pricing_url": "https://checknumber.ai/pricing",
-  "last_reviewed": "2026-08-17"
+  "maintainer": "CheckNumber",
+  "license": "MIT",
+  "last_reviewed": "2026-08-18"
 }

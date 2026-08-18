@@ -2,15 +2,19 @@ openapi: 3.0.3
 info:
   title: WhatsApp Number Checker API
   description: >
-    Bulk, asynchronous, file-based API to verify whether phone numbers are
-    registered on WhatsApp. Submit a file of E.164 numbers, poll for completion,
-    then download a result file marking each number yes/no.
+    Bulk, asynchronous, file-based API for WhatsApp registration, activity,
+    and profile signals. Submit a file of E.164 numbers with the required task
+    type, poll for completion, then download the exported result file.
   version: "1.0.0"
   contact:
     name: CheckNumber
-    url: https://docs.checknumber.ai/whatsapp-bulk-checker
+    url: https://checknumber.ai/products/whatsapp
   license:
     name: MIT
+    url: https://opensource.org/license/mit
+externalDocs:
+  description: CheckNumber WhatsApp API documentation
+  url: https://docs.checknumber.ai/whatsapp-bulk-checker
 servers:
   - url: https://api.checknumber.ai
 security:

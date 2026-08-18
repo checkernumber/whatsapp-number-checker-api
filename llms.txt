@@ -1,26 +1,39 @@
-# CheckNumber WhatsApp API family
+# CheckNumber WhatsApp Number Checker API
+> Official integration examples for the CheckNumber asynchronous WhatsApp API product family.
 
-Official examples for three asynchronous, file-based CheckNumber products. Base URL: https://api.checknumber.ai. Authentication: `X-API-Key`.
+## Canonical resources
+- [Product page](https://checknumber.ai/products/whatsapp): Registration, activity, and profile-signal products.
+- [Registration API documentation](https://docs.checknumber.ai/whatsapp-bulk-checker): Canonical `ws` contract.
+- [Activity API documentation](https://docs.checknumber.ai/whatsapp-activity-checker): Canonical `ws_active` contract.
+- [Profile API documentation](https://docs.checknumber.ai/whatsapp-bulk-number-checker-avatar): Canonical `ws_avatar` contract.
+- [GitHub repository](https://github.com/checkernumber/whatsapp-number-checker-api): Official multi-language examples and OpenAPI contract.
+- [Dashboard](https://platform.checknumber.ai): Account registration and API-key management.
+- [Pricing](https://checknumber.ai/pricing): Current product pricing and limits.
 
-## Workflow
+## Product facts
+- Brand: CheckNumber.
+- API base URL: https://api.checknumber.ai.
+- Authentication: X-API-Key request header.
+- Input: text file with one E.164 phone number per line.
+- Processing: asynchronous bulk task.
+- Products: ws, ws_active, ws_avatar.
+- Examples: Python, Node.js, Go, Java, C#, PHP, JavaScript, Shell.
 
-1. `POST /v1/tasks` as multipart form data with `file` and `task_type`.
-2. `POST /v1/gettasks` with `task_id` until `status=exported` or `failed`.
-3. Download `result_url` only after export.
-
-Input is a text file with one E.164 phone number per line.
-
-## Products
-
+## Product contracts
 - `ws`: 500–10,000,000 rows; fields `number`, `activated`.
 - `ws_active`: 1,000–10,000,000 rows; fields `number`, `activated`, `activetime`, `activedays`, `business`. The retired `signature` field is not returned.
-- `ws_avatar`: 500–10,000,000 rows; fields `number`, `activated`, `age`, `avatar`, `category`, `gender`, `hair_color`, `skin_color`. There is one canonical `number` column.
+- `ws_avatar`: 500–10,000,000 rows; fields `number`, `activated`, `age`, `avatar`, `category`, `gender`, `hair_color`, `skin_color`. The export uses one canonical `number` column.
 
-## Resources
+## Integration workflow
+1. Send multipart `POST /v1/tasks` with `file` and `task_type`.
+2. Send multipart `POST /v1/gettasks` with `task_id` until `status=exported` or `failed`.
+3. Download `result_url` only after export.
+4. Use `GET /v1/balance` to retrieve the current account balance.
 
-- Documentation: https://docs.checknumber.ai/whatsapp-bulk-checker
-- API keys: https://platform.checknumber.ai
-- Pricing: https://checknumber.ai/pricing
-- Landing page: https://checknumber.ai/products/whatsapp
+## Security and usage
+- Read the API key from the `CHECKNUMBER_API_KEY` environment variable.
+- Never expose an API key in production browser code.
+- Process only phone numbers you are authorized to verify.
+- The sample code is MIT licensed; the API service and product content are governed by their respective terms.
 
-Never expose an API key in browser-side production code. The repository contains Python, Node.js, Go, Java, C#, PHP, browser JavaScript, and Shell examples.
+Last reviewed: 2026-08-18.
