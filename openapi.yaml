@@ -1,11 +1,12 @@
 openapi: 3.0.3
 info:
   title: WhatsApp Number Checker API
-  description: >
-    Bulk, asynchronous, file-based API for WhatsApp registration, activity,
-    and profile signals. Submit a file of E.164 numbers with the required task
-    type, poll for completion, then download the exported result file.
-  version: "1.0.0"
+  description: 'Bulk, asynchronous, file-based API for WhatsApp registration, activity, and profile signals.
+    Submit a file of E.164 numbers with the required task type, poll for completion, then download the exported
+    result file.
+
+    '
+  version: 1.2.0
   contact:
     name: CheckNumber
     url: https://checknumber.ai/products/whatsapp
@@ -16,9 +17,9 @@ externalDocs:
   description: CheckNumber WhatsApp API documentation
   url: https://docs.checknumber.ai/whatsapp-bulk-checker
 servers:
-  - url: https://api.checknumber.ai
+- url: https://api.checknumber.ai
 security:
-  - ApiKeyAuth: []
+- ApiKeyAuth: []
 paths:
   /v1/tasks:
     post:
@@ -29,33 +30,45 @@ paths:
           multipart/form-data:
             schema:
               type: object
-              required: [file, task_type]
+              required:
+              - file
+              - task_type
               properties:
                 file:
                   type: string
                   format: binary
-                  description: Text file, one phone number per line in E.164 format.
+                  description: Text file with one phone per line. Per-task-type upload bounds and minimum billable
+                    quantities are in x-product-limits; accepted upload size is distinct from billing.
                 task_type:
                   type: string
-                  enum: [ws, ws_active, ws_avatar]
+                  enum:
+                  - ws
+                  - ws_active
+                  - ws_avatar
                   description: ws = real-time; ws_active = last-active days; ws_avatar = profile signals.
       responses:
-        "200":
+        '200':
           description: Task accepted by deployments using the legacy success status
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Task" }
-        "202":
+              schema:
+                $ref: '#/components/schemas/Task'
+        '202':
           description: Task accepted
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Task"
-        "400": { description: Invalid file, task type, or row count }
-        "401": { description: Missing or invalid API key }
-        "402": { description: Insufficient balance }
-        "413": { description: Uploaded file is too large }
-        "500": { description: Internal server error }
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Invalid file, task type, or row count
+        '401':
+          description: Missing or invalid API key
+        '402':
+          description: Insufficient balance
+        '413':
+          description: Uploaded file is too large
+        '500':
+          description: Internal server error
   /v1/gettasks:
     post:
       summary: Check the status of a task
@@ -65,31 +78,38 @@ paths:
           multipart/form-data:
             schema:
               type: object
-              required: [task_id]
+              required:
+              - task_id
               properties:
                 task_id:
                   type: string
       responses:
-        "200":
+        '200':
           description: Current task state
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Task"
-        "401": { description: Missing or invalid API key }
-        "404": { description: Task not found }
-        "500": { description: Internal server error }
+                $ref: '#/components/schemas/Task'
+        '401':
+          description: Missing or invalid API key
+        '404':
+          description: Task not found
+        '500':
+          description: Internal server error
   /v1/balance:
     get:
       summary: Get account balance
       responses:
-        "200":
+        '200':
           description: Current balance
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Balance" }
-        "401": { description: Missing or invalid API key }
-        "502": { description: Balance service unavailable }
+              schema:
+                $ref: '#/components/schemas/Balance'
+        '401':
+          description: Missing or invalid API key
+        '502':
+          description: Balance service unavailable
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -100,29 +120,68 @@ components:
     Money:
       type: object
       properties:
-        amount: { type: string }
-        currency: { type: string, example: USD }
+        amount:
+          type: string
+        currency:
+          type: string
+          example: USD
     Balance:
       type: object
-      required: [balance]
+      required:
+      - balance
       properties:
-        balance: { type: number, format: double }
+        balance:
+          type: number
+          format: double
     Task:
       type: object
       properties:
-        task_id: { type: string }
-        user_id: { type: string, description: Account identifier returned by deployments that expose it }
+        task_id:
+          type: string
+        user_id:
+          type: string
+          description: Account identifier returned by deployments that expose it
         status:
           type: string
-          enum: [pending, processing, exported, failed]
-        total: { type: integer }
-        success: { type: integer }
-        failure: { type: integer }
+          enum:
+          - pending
+          - processing
+          - exported
+          - failed
+        total:
+          type: integer
+        success:
+          type: integer
+        failure:
+          type: integer
         result_url:
           type: string
           description: Download URL for results, present when status is exported.
-        estimated_amount: { $ref: "#/components/schemas/Money" }
-        actual_amount: { $ref: "#/components/schemas/Money" }
-        message: { type: string }
-        created_at: { type: string, format: date-time }
-        updated_at: { type: string, format: date-time }
+        estimated_amount:
+          $ref: '#/components/schemas/Money'
+        actual_amount:
+          $ref: '#/components/schemas/Money'
+        message:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+x-product-limits:
+  ws:
+    product_id: 1
+    min_items: 1
+    max_items: 10000000
+    min_billable_numbers: 500
+  ws_active:
+    product_id: 2
+    min_items: 1
+    max_items: 10000000
+    min_billable_numbers: 500
+  ws_avatar:
+    product_id: 3
+    min_items: 1
+    max_items: 10000000
+    min_billable_numbers: 500

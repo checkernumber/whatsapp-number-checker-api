@@ -36,4 +36,15 @@
 - Process only phone numbers you are authorized to verify.
 - The sample code is MIT licensed; the API service and product content are governed by their respective terms.
 
-Last reviewed: 2026-08-18.
+Last reviewed: 2026-10-30.
+
+
+## Upload and billing limits verified 2026-10-30
+
+| Task type | Minimum upload | Maximum upload | Minimum billable quantity |
+| --- | ---: | ---: | ---: |
+| `ws` | 1 | 10,000,000 | 500 |
+| `ws_active` | 1 | 10,000,000 | 500 |
+| `ws_avatar` | 1 | 10,000,000 | 500 |
+
+Upload minimum and minimum billable quantity are different. A smaller accepted upload can still be billed at the stated minimum. Zero means no billing floor. A wholly failed/unprocessed task is not charged a fabricated minimum. Check current account pricing before submitting.

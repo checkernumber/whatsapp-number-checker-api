@@ -252,4 +252,15 @@ Use this API only to verify numbers you are authorized to process, and in compli
 
 ---
 
-*Last reviewed: 2026-08-18 · Maintained by CheckNumber. Canonical product page: https://checknumber.ai/products/whatsapp*
+*Last reviewed: 2026-10-30 · Maintained by CheckNumber. Canonical product page: https://checknumber.ai/products/whatsapp*
+
+
+## Upload and billing limits verified 2026-10-30
+
+| Task type | Minimum upload | Maximum upload | Minimum billable quantity |
+| --- | ---: | ---: | ---: |
+| `ws` | 1 | 10,000,000 | 500 |
+| `ws_active` | 1 | 10,000,000 | 500 |
+| `ws_avatar` | 1 | 10,000,000 | 500 |
+
+Upload minimum and minimum billable quantity are different. A smaller accepted upload can still be billed at the stated minimum. Zero means no billing floor. A wholly failed/unprocessed task is not charged a fabricated minimum. Check current account pricing before submitting.
